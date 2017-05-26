@@ -24,6 +24,17 @@ node {
     mavenPush()
   }
 
+  stage ('CI Deploy') {
+    cfPush()
+  }
+
+  stage('Staging Deploy') {
+    cfPush {
+      ldapCredentialId = 'pcf_user'
+      cfTarget = 'stage'
+    }
+  }
+
 
   stage ('Cleanup') {
     deleteDir()
