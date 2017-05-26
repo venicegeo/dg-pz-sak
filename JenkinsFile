@@ -1,6 +1,5 @@
 @Library('pipelib@master') _
 
-def THREADFIX_ID = env.THREADFIX_ID ? env.THREADFIX_ID : '115'
 
 node {
 // ('sl61')
@@ -8,7 +7,7 @@ node {
 
   stage('Setup') {
     git([
-      url: env.GIT_URL ? env.GIT_URL : 'https://github.com/venicegeo/pz-sak',
+      url: env.GIT_URL ? env.GIT_URL : 'https://github.com/venicegeo/dg-pz-sak',
       branch: "master"
     ])
   }
@@ -25,21 +24,9 @@ node {
     mavenPush()
   }
 
-  stage('Initial Scans') {
-    dependencyCheck {
-      threadfixId = THREADFIX_ID
-    }
-
-    // We shouldn't need to run sonar again because the lcov.info file was
-    // already generated with karma tests and the sonar-project.properties file exists
-    // sh './ci/sonar.sh'
-  }
 
   stage ('CI Deploy') {
     cfPush()
-    zap {
-      threadfixId = THREADFIX_ID
-    }
     cfBgDeploy()
   }
 
@@ -49,7 +36,7 @@ node {
 
   stage('Reset') {
     git([
-      url: env.GIT_URL ? env.GIT_URL : 'https://github.com/venicegeo/pz-sak',
+      url: env.GIT_URL ? env.GIT_URL : 'https://github.com/venicegeo/dg-pz-sak',
       branch: "master"
     ])
   }
@@ -63,11 +50,6 @@ node {
     }
   }
 
-  stage('Final Scans') {
-    fortify {
-      threadfixId = THREADFIX_ID
-    }
-  }
 
   stage ('Cleanup') {
     deleteDir()
