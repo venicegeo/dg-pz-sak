@@ -25,32 +25,6 @@ node {
   }
 
 
-  stage ('CI Deploy') {
-    cfPush()
-    cfBgDeploy()
-  }
-
-  stage ('Integration Testing') {
-    postman()
-  }
-
-  stage('Reset') {
-    git([
-      url: env.GIT_URL ? env.GIT_URL : 'https://github.com/venicegeo/dg-pz-sak',
-      branch: "master"
-    ])
-  }
-
-  stage('Staging Deploy') {
-    cfPush {
-      cfTarget = 'stage'
-    }
-    cfBgDeploy {
-      cfTarget = 'stage'
-    }
-  }
-
-
   stage ('Cleanup') {
     deleteDir()
   }
