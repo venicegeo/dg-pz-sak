@@ -9,4 +9,3 @@ applications:
   timeout: 180
   services:
     - pz-geoserver-efs
-    - geoaxis

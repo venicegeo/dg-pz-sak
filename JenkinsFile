@@ -12,16 +12,18 @@ node {
     ])
   }
 
-  stage('Karma Tests') {
-    npmSetup()
-    withEnv(["PATH+=${nodejs}/bin"]) {
-      sh './ci/karma.sh'
-    }
-  } 
+  //stage('Karma Tests') {
+  //  npmSetup()
+  //  withEnv(["PATH+=${nodejs}/bin"]) {
+  //    sh './ci/karma.sh'
+  //  }
+  //} 
 
   stage('Archive') {
     sh './ci/archive.sh'
-    mavenPush()
+    // Remove maven push because we don't have nexus right now
+    // Does this need to go to S3?
+    // mavenPush()
   }
 
   stage ('CI Deploy') {
