@@ -12,12 +12,12 @@ node {
     ])
   }
 
-  stage('Karma Tests') {
-    npmSetup()
-    withEnv(["PATH+=${nodejs}/bin"]) {
-      sh './ci/karma.sh'
-    }
-  } 
+  //stage('Karma Tests') {
+  //  npmSetup()
+  //  withEnv(["PATH+=${nodejs}/bin"]) {
+  //    sh './ci/karma.sh'
+  //  }
+  //} 
 
   stage('Archive') {
     sh './ci/archive.sh'
