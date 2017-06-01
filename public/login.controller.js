@@ -52,7 +52,7 @@
 
             $http({
                 method: "GET",
-                url: "/proxy?url=" + discover.securityHost + "/authenticate",
+                url: "/proxy?url=" + discover.securityHost + "/authentication",
                 headers: {
                     "Authorization": "Basic " + Auth.id
                 }
