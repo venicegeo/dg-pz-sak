@@ -44,28 +44,48 @@
                 toaster.pop('error', 'Error', 'Please enter a password.');
                 return;
             }
-            pzlogger.async(
-                CONST.informational,
-                userProfileResponse.data.DN,
-                "loginSuccess",
-                "",
-                "User " + userProfileResponse.data.username + " logged in successfully",
-                false
-            ).then(function () {
-                //$scope.resourceData = html.data.data;
-            }, function (){
-                //toaster.pop('error', "Error", "There was an issue with your request.");
+
+            Auth.encode(
+                $scope.username,
+                $scope.password
+            );
+
+            $http({
+                method: "GET",
+                url: "/proxy?url=" + discover.securityHost + "/authenticate",
+                headers: {
+                    "Authorization": "Basic " + Auth.id
+                }
+            }).then(function successCallback( html ) {
+
+                pzlogger.async(
+                    CONST.informational,
+                    html.data.userProfile.DN,
+                    "loginSuccess",
+                    "",
+                    "User " + html.data.userProfile.username + " logged in successfully",
+                    false
+                ).then(function () {
+                    //$scope.resourceData = html.data.data;
+                }, function (){
+                    //toaster.pop('error', "Error", "There was an issue with your request.");
+                });
+
+                Auth[CONST.isLoggedIn] = CONST.loggedIn;
+                Auth.encode($scope.apikey, "");
+                Auth.setUser(
+                    html.data.userProfile.username,
+                    html.data.userProfile.DN);
+                Auth.sessionId = uuid.generate();
+                $sessionStorage[CONST.auth] = Auth;
+                $location.path("/index");
+                $rootScope.$emit('loggedInEvent');
+
+            }, function errorCallback(response){
+                console.log("search.controller fail all statuses");
+                toaster.pop('error', "Error", "There was an issue with retrieving all possible statuses.");
             });
-            //Auth.id = $sessionStorage[CONST.auth].id;
-            Auth[CONST.isLoggedIn] = CONST.loggedIn;
-            Auth.encode($scope.apikey, "");
-            Auth.setUser(
-                userProfileResponse.data.username,
-                userProfileResponse.data.DN);
-            Auth.sessionId = uuid.generate();
-            $sessionStorage[CONST.auth] = Auth;
-            $location.path("/index");
-            $rootScope.$emit('loggedInEvent');
+
 
         };
 
