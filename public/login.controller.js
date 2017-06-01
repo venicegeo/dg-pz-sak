@@ -33,14 +33,40 @@
 
         $scope.login = function() {
             if (angular.isUndefined($scope.apikey) || $scope.apikey === "") {
-                // For now, just have the user enter their API Key
                 toaster.pop('error', 'Error', 'Please enter an api key.');
                 return;
             }
+            if (angular.isUndefined($scope.username) || $scope.username === "") {
+                toaster.pop('error', 'Error', 'Please enter a username.');
+                return;
+            }
+            if (angular.isUndefined($scope.password) || $scope.password === "") {
+                toaster.pop('error', 'Error', 'Please enter a password.');
+                return;
+            }
+            pzlogger.async(
+                CONST.informational,
+                userProfileResponse.data.DN,
+                "loginSuccess",
+                "",
+                "User " + userProfileResponse.data.username + " logged in successfully",
+                false
+            ).then(function () {
+                //$scope.resourceData = html.data.data;
+            }, function (){
+                //toaster.pop('error', "Error", "There was an issue with your request.");
+            });
+            //Auth.id = $sessionStorage[CONST.auth].id;
+            Auth[CONST.isLoggedIn] = CONST.loggedIn;
             Auth.encode($scope.apikey, "");
+            Auth.setUser(
+                userProfileResponse.data.username,
+                userProfileResponse.data.DN);
+            Auth.sessionId = uuid.generate();
             $sessionStorage[CONST.auth] = Auth;
-            var redirect_uri="https://" + discover.sak + "/geoaxis";
-            window.location.replace("/loginProxy?url="+redirect_uri);
+            $location.path("/index");
+            $rootScope.$emit('loggedInEvent');
+
         };
 
     }

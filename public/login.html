@@ -45,6 +45,12 @@
     </div>
     <div align="center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
         <form ng-submit="login()">
+            <label style="margin-right:1px">Username</label>
+            <input type="text" ng-model="username">
+            <br>
+            <label style="margin-right:1px">Password</label>
+            <input type="password" ng-model="password">
+            <br>
             <label style="margin-right:1px">API Key</label>
             <input type="text" ng-model="apikey">
             <br>
