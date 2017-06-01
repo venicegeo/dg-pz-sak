@@ -17,9 +17,9 @@
     'use strict';
     angular
         .module('SAKapp')
-        .controller('LoginController', ['$scope', '$sessionStorage', "$http", "discover", "toaster", "Auth", "CONST", "pzlogger", "uuid", "$location", LoginController]);
+        .controller('LoginController', ['$scope', '$rootScope', '$sessionStorage', "$http", "discover", "toaster", "Auth", "CONST", "pzlogger", "uuid", "$location", LoginController]);
 
-    function LoginController ($scope, $sessionStorage, $http, discover, toaster, Auth, CONST, pzlogger, uuid, $location) {
+    function LoginController ($scope, $rootScope, $sessionStorage, $http, discover, toaster, Auth, CONST, pzlogger, uuid, $location) {
         $sessionStorage[CONST.auth] = Auth;
         var options = {
             backdrop: 'static',
