@@ -349,9 +349,6 @@
         Auth.sessionId = undefined;
         $sessionStorage[CONST.auth] = Auth;
         stopIdleTimer();
-
-        // Need to redirect the user to logout completely
-        window.location = "/logoutProxy"
     };
 
     $scope.my_data = treedata_avm;
