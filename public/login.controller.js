@@ -32,10 +32,6 @@
         }
 
         $scope.login = function() {
-            if (angular.isUndefined($scope.apikey) || $scope.apikey === "") {
-                toaster.pop('error', 'Error', 'Please enter an api key.');
-                return;
-            }
             if (angular.isUndefined($scope.username) || $scope.username === "") {
                 toaster.pop('error', 'Error', 'Please enter a username.');
                 return;
@@ -58,34 +54,67 @@
                 }
             }).then(function successCallback( html ) {
 
-                pzlogger.async(
-                    CONST.informational,
-                    html.data.userProfile.DN,
-                    "loginSuccess",
-                    "",
-                    "User " + html.data.userProfile.username + " logged in successfully",
-                    false
-                ).then(function () {
-                    //$scope.resourceData = html.data.data;
-                }, function (){
-                    //toaster.pop('error', "Error", "There was an issue with your request.");
-                });
+                $http({
+                    method: "GET",
+                    url: "/proxy/" + discover.securityHost + "/v2/key",
+                    headers: {
+                        "Authorization": "Basic " + Auth.id
+                    }
+                }).then(function successCallback( keyResponse ) {
 
-                Auth[CONST.isLoggedIn] = CONST.loggedIn;
-                Auth.encode($scope.apikey, "");
-                Auth.setUser(
-                    html.data.userProfile.username,
-                    html.data.userProfile.DN);
-                Auth.sessionId = uuid.generate();
-                $sessionStorage[CONST.auth] = Auth;
-                $location.path("/index");
-                $rootScope.$emit('loggedInEvent');
+                    if (keyResponse.data.uuid === null) {
+                        Auth.encode(
+                            $scope.username,
+                            $scope.password
+                        );
+                        $http({
+                            method: "POST",
+                            url: "/proxy/" + discover.securityHost + "/v2/key",
+                            headers: {
+                                "Authorization": "Basic " + Auth.id
+                            }
+                        }).then(function successCallback( keyRequest ) {
+                            console.log("needed to request a new key");
+                            Auth.encode(keyRequest.data.uuid, "");
+                        }).then(function errorCallback() {
+                            console.log("error requesting key")
+                            logout();
+                        });
+                    }
 
+                    pzlogger.async(
+                        CONST.informational,
+                        html.data.userProfile.DN,
+                        "loginSuccess",
+                        "",
+                        "User " + html.data.userProfile.username + " logged in successfully",
+                        false
+                    ).then(function () {
+                        //$scope.resourceData = html.data.data;
+                    }, function (){
+                        //toaster.pop('error', "Error", "There was an issue with your request.");
+                    });
+
+                    Auth[CONST.isLoggedIn] = CONST.loggedIn;
+                    if (keyResponse.data.uuid !== null) {
+                        Auth.encode(keyResponse.data.uuid, "");
+                    }
+                    Auth.setUser(
+                        html.data.userProfile.username,
+                        html.data.userProfile.DN);
+                    Auth.sessionId = uuid.generate();
+                    $sessionStorage[CONST.auth] = Auth;
+                    $location.path("/index");
+                    $rootScope.$emit('loggedInEvent');
+
+                }.then(function errorCallback( error ){
+                    console.log("login.controller failed");
+                    toaster.pop('error', "Error", "There was an issue retrieving your key.");
+                }));
             }, function errorCallback(response){
-                console.log("search.controller fail all statuses");
-                toaster.pop('error', "Error", "There was an issue with retrieving all possible statuses.");
+                console.log("login.controller failed");
+                toaster.pop('error', "Error", "There was an issue logging in.");
             });
-
 
         };
 
