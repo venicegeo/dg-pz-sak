@@ -107,10 +107,10 @@
                     $location.path("/index");
                     $rootScope.$emit('loggedInEvent');
 
-                }.then(function errorCallback( error ){
+                }).then(function errorCallback( error ){
                     console.log("login.controller failed");
                     toaster.pop('error', "Error", "There was an issue retrieving your key.");
-                }));
+                });
             }, function errorCallback(response){
                 console.log("login.controller failed");
                 toaster.pop('error', "Error", "There was an issue logging in.");
