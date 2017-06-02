@@ -16,7 +16,7 @@
 
 config = {
     baseUrl: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    defaultDomain: '.int.geointservices.io',
-    jenkinsUrl: 'jenkins.devops.geointservices.io',
-    devOpsUrl: 'login.devops.geointservices.io'
+    defaultDomain: '.apps.coastline.dg-cf-test.net',
+    jenkinsUrl: 'jenkins.coastline.dg-cf-test.net',
+    devOpsUrl: 'apps.sys.coastline.dg-cf-test.net'
 };
